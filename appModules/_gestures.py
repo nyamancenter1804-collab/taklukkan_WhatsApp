@@ -448,3 +448,8 @@ class GesturesMixin:
 			ui.message(_("Mode Fokus Otomatis: nyala"))
 		else:
 			ui.message(_("Mode Fokus Otomatis: mati"))
+
+	@scriptHandler.script(description=_("Cek Pembaruan Add-on via GitHub"))
+	def script_checkForUpdates(self, gesture):
+		from . import _update
+		_update.check_for_updates()

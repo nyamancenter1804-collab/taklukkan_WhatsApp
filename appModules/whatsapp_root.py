@@ -724,6 +724,3 @@ class KeyManagerDialog(wx.Dialog):
 		wx.MessageBox(_("Pintasan berhasil disimpan."), _("Sukses"), wx.OK | wx.ICON_INFORMATION)
 		self.EndModal(wx.ID_OK)
 
-	@scriptHandler.script(description=_("Cek Pembaruan Add-on via GitHub"))
-	def script_checkForUpdates(self, gesture):
-		_update.check_for_updates()

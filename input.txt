@@ -1,1 +1,1 @@
-Memperbaiki fokus ReadOnlyTextDialog (STAY_ON_TOP) dan merilis v5.4.4
+Arsitektur modular, Input Gestures kembali, dan Panduan AI rilis v5.4.5
