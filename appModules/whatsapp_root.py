@@ -45,9 +45,25 @@ USAGE_HINT_RE = re.compile(
 
 
 
-from ._gestures import GesturesMixin
+from . import _gestures
 from . import _update
-class AppModule(appModuleHandler.AppModule, GesturesMixin):
+class AppModule(appModuleHandler.AppModule):
+	script_showHelp = _gestures.script_showHelp
+	script_openKeyManager = _gestures.script_openKeyManager
+	script_copyMessage = _gestures.script_copyMessage
+	script_playAudio = _gestures.script_playAudio
+	script_readCompleteMessage = _gestures.script_readCompleteMessage
+	script_readCompleteMessageBrowse = _gestures.script_readCompleteMessageBrowse
+	script_contextMenu = _gestures.script_contextMenu
+	script_reactMessage = _gestures.script_reactMessage
+	script_focusComposer = _gestures.script_focusComposer
+	script_goToConversationList = _gestures.script_goToConversationList
+	script_goToMessageList = _gestures.script_goToMessageList
+	script_togglePhoneReadingInChatList = _gestures.script_togglePhoneReadingInChatList
+	script_togglePhoneReadingInMessageList = _gestures.script_togglePhoneReadingInMessageList
+	script_toggleUsageHints = _gestures.script_toggleUsageHints
+	script_toggleAutoFocusMode = _gestures.script_toggleAutoFocusMode
+	script_checkForUpdates = _gestures.script_checkForUpdates
 	"""
 	App Module for WhatsApp Desktop.
 	"""
