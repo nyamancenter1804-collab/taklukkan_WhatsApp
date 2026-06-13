@@ -133,20 +133,28 @@ class AppModule(appModuleHandler.AppModule):
 			pass
 
 	def _play_tone(self, tone_type="on"):
-		def _beep():
-			try:
-				import tones
-				if tone_type == "on":
-					tones.beep(880, 50)
-					time.sleep(0.05)
-					tones.beep(1100, 50)
-				elif tone_type == "off":
-					tones.beep(1100, 50)
-					time.sleep(0.05)
-					tones.beep(880, 50)
-			except Exception:
-				pass
-		threading.Thread(target=_beep, daemon=True).start()
+		try:
+			import nvWave
+			sound_dir = os.path.join(os.path.dirname(__file__), "Sound")
+			if tone_type == "on":
+				nvWave.playWaveFile(os.path.join(sound_dir, "start_skrips.wav"))
+			elif tone_type == "off":
+				nvWave.playWaveFile(os.path.join(sound_dir, "stop_skrips.wav"))
+		except Exception:
+			def _beep():
+				try:
+					import tones
+					if tone_type == "on":
+						tones.beep(880, 50)
+						time.sleep(0.05)
+						tones.beep(1100, 50)
+					elif tone_type == "off":
+						tones.beep(1100, 50)
+						time.sleep(0.05)
+						tones.beep(880, 50)
+				except Exception:
+					pass
+			threading.Thread(target=_beep, daemon=True).start()
 
 	@scriptHandler.script(
 		description=_("Awalan mode pintasan Taklukkan WhatsApp")
@@ -253,7 +261,7 @@ class AppModule(appModuleHandler.AppModule):
 					
 				latest_version = data.get("tag_name", "").replace("v", "")
 				manifest_path = os.path.join(os.path.dirname(__file__), "..", "manifest.ini")
-				current_version = "5.2.0"
+				current_version = "5.3.0"
 				try:
 					with open(manifest_path, "r", encoding="utf-8") as f:
 						for line in f:
