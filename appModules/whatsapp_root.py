@@ -45,7 +45,7 @@ USAGE_HINT_RE = re.compile(
 
 class ReadOnlyTextDialog(wx.Dialog):
 	def __init__(self, parent, title, message, btn1_label="OK", btn2_label=None):
-		super().__init__(parent, title=title, size=(500, 400))
+		super().__init__(parent, title=title, size=(500, 400), style=wx.DEFAULT_DIALOG_STYLE | wx.RESIZE_BORDER | wx.STAY_ON_TOP)
 		mainSizer = wx.BoxSizer(wx.VERTICAL)
 		
 		self.textCtrl = wx.TextCtrl(self, style=wx.TE_MULTILINE | wx.TE_READONLY | wx.TE_RICH2)
@@ -198,6 +198,7 @@ class AppModule(appModuleHandler.AppModule):
 		
 		def show_help_dialog():
 			dlg = ReadOnlyTextDialog(gui.mainFrame, _("Bantuan Taklukkan WhatsApp"), help_text, btn1_label="OK")
+			dlg.Raise()
 			dlg.ShowModal()
 			dlg.Destroy()
 		wx.CallAfter(show_help_dialog)
@@ -262,7 +263,7 @@ class AppModule(appModuleHandler.AppModule):
 					
 				latest_version = data.get("tag_name", "").replace("v", "")
 				manifest_path = os.path.join(os.path.dirname(__file__), "..", "manifest.ini")
-				current_version = "5.4.3"
+				current_version = "5.4.4"
 				try:
 					with open(manifest_path, "r", encoding="utf-8") as f:
 						for line in f:
@@ -283,6 +284,7 @@ class AppModule(appModuleHandler.AppModule):
 						message = _("Versi terbaru Taklukkan WhatsApp ({}) tersedia!\nVersi Anda: {}\n\nCatatan Rilis:\n{}\n\nApakah Anda ingin mengunduh dan menginstalnya sekarang?").format(latest_version, current_version, release_notes)
 						def show_prompt():
 							dlg = ReadOnlyTextDialog(gui.mainFrame, _("Pembaruan Tersedia"), message, btn1_label="Update", btn2_label="Batal")
+							dlg.Raise()
 							res = dlg.ShowModal()
 							if res == wx.ID_OK and dlg.result:
 								self._download_and_install_update(download_url)
