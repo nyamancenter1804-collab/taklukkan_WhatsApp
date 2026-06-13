@@ -135,12 +135,12 @@ class AppModule(appModuleHandler.AppModule):
 
 	def _play_tone(self, tone_type="on"):
 		try:
-			import nvWave
+			import winsound
 			sound_dir = os.path.join(os.path.dirname(__file__), "Sound")
 			if tone_type == "on":
-				nvWave.playWaveFile(os.path.join(sound_dir, "start_skrips.wav"))
+				winsound.PlaySound(os.path.join(sound_dir, "start_skrips.wav"), winsound.SND_FILENAME | winsound.SND_ASYNC)
 			elif tone_type == "off":
-				nvWave.playWaveFile(os.path.join(sound_dir, "stop_skrips.wav"))
+				winsound.PlaySound(os.path.join(sound_dir, "stop_skrips.wav"), winsound.SND_FILENAME | winsound.SND_ASYNC)
 		except Exception:
 			def _beep():
 				try:
@@ -262,7 +262,7 @@ class AppModule(appModuleHandler.AppModule):
 					
 				latest_version = data.get("tag_name", "").replace("v", "")
 				manifest_path = os.path.join(os.path.dirname(__file__), "..", "manifest.ini")
-				current_version = "5.3.3"
+				current_version = "5.3.4"
 				try:
 					with open(manifest_path, "r", encoding="utf-8") as f:
 						for line in f:
