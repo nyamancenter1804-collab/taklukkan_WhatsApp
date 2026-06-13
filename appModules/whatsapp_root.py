@@ -41,6 +41,38 @@ USAGE_HINT_RE = re.compile(
 	re.IGNORECASE
 )
 
+class ReadOnlyTextDialog(wx.Dialog):
+	def __init__(self, parent, title, message, btn1_label="OK", btn2_label=None):
+		super().__init__(parent, title=title, size=(500, 400))
+		mainSizer = wx.BoxSizer(wx.VERTICAL)
+		
+		self.textCtrl = wx.TextCtrl(self, style=wx.TE_MULTILINE | wx.TE_READONLY | wx.TE_RICH2)
+		self.textCtrl.SetValue(message)
+		mainSizer.Add(self.textCtrl, proportion=1, flag=wx.EXPAND | wx.ALL, border=10)
+		
+		btnSizer = wx.BoxSizer(wx.HORIZONTAL)
+		self.btn1 = wx.Button(self, label=btn1_label)
+		self.btn1.Bind(wx.EVT_BUTTON, self.onBtn1)
+		btnSizer.Add(self.btn1, flag=wx.ALL, border=5)
+		
+		if btn2_label:
+			self.btn2 = wx.Button(self, label=btn2_label)
+			self.btn2.Bind(wx.EVT_BUTTON, self.onBtn2)
+			btnSizer.Add(self.btn2, flag=wx.ALL, border=5)
+			
+		mainSizer.Add(btnSizer, flag=wx.ALIGN_RIGHT | wx.BOTTOM | wx.RIGHT, border=10)
+		self.SetSizer(mainSizer)
+		self.result = False
+		self.textCtrl.SetFocus()
+
+	def onBtn1(self, evt):
+		self.result = True
+		self.EndModal(wx.ID_OK)
+
+	def onBtn2(self, evt):
+		self.result = False
+		self.EndModal(wx.ID_CANCEL)
+
 class AppModule(appModuleHandler.AppModule):
 	"""
 	App Module for WhatsApp Desktop.
@@ -153,7 +185,12 @@ class AppModule(appModuleHandler.AppModule):
 			help_text += f"Tombol '{k}': {available_actions.get(v, v)}\n"
 		
 		help_text += _("\nTekan Escape atau tekan awalan skrip lagi untuk membatalkan mode.")
-		ui.browseableMessage(help_text, _("Bantuan Taklukkan WhatsApp"))
+		
+		def show_help_dialog():
+			dlg = ReadOnlyTextDialog(gui.mainFrame, _("Bantuan Taklukkan WhatsApp"), help_text, btn1_label="OK")
+			dlg.ShowModal()
+			dlg.Destroy()
+		wx.CallAfter(show_help_dialog)
 
 	def getScript(self, gesture):
 		if getattr(self, "layer_active", False):
@@ -216,7 +253,7 @@ class AppModule(appModuleHandler.AppModule):
 					
 				latest_version = data.get("tag_name", "").replace("v", "")
 				manifest_path = os.path.join(os.path.dirname(__file__), "..", "manifest.ini")
-				current_version = "5.1.0"
+				current_version = "5.2.0"
 				try:
 					with open(manifest_path, "r", encoding="utf-8") as f:
 						for line in f:
@@ -233,14 +270,14 @@ class AppModule(appModuleHandler.AppModule):
 							break
 					
 					if download_url:
+						release_notes = data.get("body", "")
+						message = _("Versi terbaru Taklukkan WhatsApp ({}) tersedia!\nVersi Anda: {}\n\nCatatan Rilis:\n{}\n\nApakah Anda ingin mengunduh dan menginstalnya sekarang?").format(latest_version, current_version, release_notes)
 						def show_prompt():
-							res = wx.MessageBox(
-								_("Versi terbaru Taklukkan WhatsApp ({}) tersedia!\nVersi Anda: {}\n\nApakah Anda ingin mengunduh dan menginstalnya sekarang?").format(latest_version, current_version),
-								_("Pembaruan Tersedia"),
-								wx.YES_NO | wx.ICON_INFORMATION
-							)
-							if res == wx.YES:
+							dlg = ReadOnlyTextDialog(gui.mainFrame, _("Pembaruan Tersedia"), message, btn1_label="Update", btn2_label="Batal")
+							res = dlg.ShowModal()
+							if res == wx.ID_OK and dlg.result:
 								self._download_and_install_update(download_url)
+							dlg.Destroy()
 						wx.CallAfter(show_prompt)
 					else:
 						ui.message(_("Pembaruan ditemukan, tetapi file add-on tidak tersedia di rilis GitHub."))
