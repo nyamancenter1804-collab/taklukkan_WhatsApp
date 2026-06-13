@@ -253,7 +253,7 @@ class AppModule(appModuleHandler.AppModule):
 	def script_checkForUpdates(self, gesture):
 		def _run():
 			try:
-				ui.message(_("Memeriksa pembaruan Taklukkan WhatsApp..."))
+				wx.CallAfter(ui.message, _("Memeriksa pembaruan Taklukkan WhatsApp..."))
 				url = "https://api.github.com/repos/nyamancenter1804-collab/taklukkan_WhatsApp/releases/latest"
 				req = urllib.request.Request(url, headers={'User-Agent': 'NVDA-TaklukkanWhatsApp'})
 				with urllib.request.urlopen(req, timeout=10) as response:
@@ -261,7 +261,7 @@ class AppModule(appModuleHandler.AppModule):
 					
 				latest_version = data.get("tag_name", "").replace("v", "")
 				manifest_path = os.path.join(os.path.dirname(__file__), "..", "manifest.ini")
-				current_version = "5.3.0"
+				current_version = "5.3.1"
 				try:
 					with open(manifest_path, "r", encoding="utf-8") as f:
 						for line in f:
@@ -288,17 +288,22 @@ class AppModule(appModuleHandler.AppModule):
 							dlg.Destroy()
 						wx.CallAfter(show_prompt)
 					else:
-						ui.message(_("Pembaruan ditemukan, tetapi file add-on tidak tersedia di rilis GitHub."))
+						wx.CallAfter(ui.message, _("Pembaruan ditemukan, tetapi file add-on tidak tersedia di rilis GitHub."))
 				else:
-					ui.message(_("Taklukkan WhatsApp sudah dalam versi terbaru."))
+					wx.CallAfter(ui.message, _("Taklukkan WhatsApp sudah dalam versi terbaru."))
+			except urllib.error.HTTPError as e:
+				if e.code == 403:
+					wx.CallAfter(ui.message, _("Pengecekan gagal karena limit GitHub tercapai. Silakan coba lagi nanti."))
+				else:
+					wx.CallAfter(ui.message, _("Gagal memeriksa pembaruan. Pastikan Anda terhubung ke internet."))
 			except Exception as e:
-				ui.message(_("Gagal memeriksa pembaruan. Pastikan Anda terhubung ke internet."))
+				wx.CallAfter(ui.message, _("Gagal memeriksa pembaruan. Pastikan Anda terhubung ke internet."))
 		threading.Thread(target=_run, daemon=True).start()
 
 	def _download_and_install_update(self, url):
 		def _run():
 			try:
-				ui.message(_("Mengunduh pembaruan, mohon tunggu..."))
+				wx.CallAfter(ui.message, _("Mengunduh pembaruan, mohon tunggu..."))
 				temp_dir = tempfile.gettempdir()
 				addon_path = os.path.join(temp_dir, "TaklukkanWhatsApp_update.nvda-addon")
 				
@@ -306,10 +311,10 @@ class AppModule(appModuleHandler.AppModule):
 				with urllib.request.urlopen(req, timeout=30) as response, open(addon_path, 'wb') as out_file:
 					out_file.write(response.read())
 				
-				ui.message(_("Unduhan selesai. Membuka penginstal NVDA..."))
+				wx.CallAfter(ui.message, _("Unduhan selesai. Membuka penginstal NVDA..."))
 				os.startfile(addon_path)
 			except Exception as e:
-				ui.message(_("Gagal mengunduh pembaruan."))
+				wx.CallAfter(ui.message, _("Gagal mengunduh pembaruan."))
 		threading.Thread(target=_run, daemon=True).start()
 
 	def _loadConfigCache(self):
