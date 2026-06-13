@@ -262,7 +262,7 @@ class AppModule(appModuleHandler.AppModule):
 					
 				latest_version = data.get("tag_name", "").replace("v", "")
 				manifest_path = os.path.join(os.path.dirname(__file__), "..", "manifest.ini")
-				current_version = "5.4.2"
+				current_version = "5.4.3"
 				try:
 					with open(manifest_path, "r", encoding="utf-8") as f:
 						for line in f:
