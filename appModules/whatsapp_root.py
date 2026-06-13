@@ -262,7 +262,7 @@ class AppModule(appModuleHandler.AppModule):
 					
 				latest_version = data.get("tag_name", "").replace("v", "")
 				manifest_path = os.path.join(os.path.dirname(__file__), "..", "manifest.ini")
-				current_version = "5.3.4"
+				current_version = "5.3.7"
 				try:
 					with open(manifest_path, "r", encoding="utf-8") as f:
 						for line in f:
@@ -881,8 +881,8 @@ class AppModule(appModuleHandler.AppModule):
 		except Exception: pass
 
 	def _hasTableInAncestors(self, obj):
-		if Role is None: return False
-		table_role = getattr(Role, "TABLE", None)
+		if controlTypes.Role is None: return False
+		table_role = getattr(controlTypes.Role, "TABLE", None)
 		if table_role is None: return False
 		current = obj
 		for _ in range(3):
