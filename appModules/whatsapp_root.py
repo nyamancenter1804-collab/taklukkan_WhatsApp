@@ -16,6 +16,7 @@ import speech
 import urllib.request
 import urllib.error
 import tempfile
+import gui
 
 # --- TRANSLATOR ---
 # Bahasa Indonesia
@@ -244,7 +245,6 @@ class AppModule(appModuleHandler.AppModule):
 		return super(AppModule, self).getScript(gesture)
 
 	def script_openKeyManager(self, gesture):
-		import gui
 		def run():
 			dlg = KeyManagerDialog(gui.mainFrame, self)
 			dlg.ShowModal()
@@ -262,7 +262,7 @@ class AppModule(appModuleHandler.AppModule):
 					
 				latest_version = data.get("tag_name", "").replace("v", "")
 				manifest_path = os.path.join(os.path.dirname(__file__), "..", "manifest.ini")
-				current_version = "5.3.7"
+				current_version = "5.3.9"
 				try:
 					with open(manifest_path, "r", encoding="utf-8") as f:
 						for line in f:
