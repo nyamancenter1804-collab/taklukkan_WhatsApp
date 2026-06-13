@@ -1,1 +1,1 @@
-Mengembalikan ReadOnlyTextDialog dan merilis v5.4.3
+Memperbaiki fokus ReadOnlyTextDialog (STAY_ON_TOP) dan merilis v5.4.4
