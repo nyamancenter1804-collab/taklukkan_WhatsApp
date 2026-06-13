@@ -1,1 +1,1 @@
-Memperbaiki bug F3 yang tidak terdaftar
+Memperbaiki input gesture yang tidak muncul di dialog NVDA
