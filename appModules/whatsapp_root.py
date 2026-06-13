@@ -197,9 +197,7 @@ class AppModule(appModuleHandler.AppModule):
 		help_text += _("\nTekan Escape atau tekan awalan skrip lagi untuk membatalkan mode.")
 		
 		def show_help_dialog():
-			dlg = ReadOnlyTextDialog(gui.mainFrame, _("Bantuan Taklukkan WhatsApp"), help_text, btn1_label="OK")
-			dlg.ShowModal()
-			dlg.Destroy()
+			gui.messageBox(help_text, _("Bantuan Taklukkan WhatsApp"), wx.OK | wx.ICON_INFORMATION)
 		wx.CallAfter(show_help_dialog)
 
 	def getScript(self, gesture):
@@ -262,7 +260,7 @@ class AppModule(appModuleHandler.AppModule):
 					
 				latest_version = data.get("tag_name", "").replace("v", "")
 				manifest_path = os.path.join(os.path.dirname(__file__), "..", "manifest.ini")
-				current_version = "5.3.9"
+				current_version = "5.4.0"
 				try:
 					with open(manifest_path, "r", encoding="utf-8") as f:
 						for line in f:
@@ -282,11 +280,9 @@ class AppModule(appModuleHandler.AppModule):
 						release_notes = data.get("body", "")
 						message = _("Versi terbaru Taklukkan WhatsApp ({}) tersedia!\nVersi Anda: {}\n\nCatatan Rilis:\n{}\n\nApakah Anda ingin mengunduh dan menginstalnya sekarang?").format(latest_version, current_version, release_notes)
 						def show_prompt():
-							dlg = ReadOnlyTextDialog(gui.mainFrame, _("Pembaruan Tersedia"), message, btn1_label="Update", btn2_label="Batal")
-							res = dlg.ShowModal()
-							if res == wx.ID_OK and dlg.result:
+							res = gui.messageBox(message, _("Pembaruan Tersedia"), wx.YES_NO | wx.ICON_INFORMATION)
+							if res == wx.YES:
 								self._download_and_install_update(download_url)
-							dlg.Destroy()
 						wx.CallAfter(show_prompt)
 					else:
 						wx.CallAfter(ui.message, _("Pembaruan ditemukan, tetapi file add-on tidak tersedia di rilis GitHub."))
